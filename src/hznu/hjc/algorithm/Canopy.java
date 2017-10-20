@@ -1,23 +1,24 @@
-package hznu.hjc.algorithm.canopy;
+package hznu.hjc.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import hznu.hjc.entry.Point;
 
-
 /**
  * Canopy算法 借助canopy算法计算对应的Kmeans中的K值大小 只是将混乱的数据划分成大概的几个类别，所以它是不太准确的
  * 其中对于计算K值来说，canopy算法中的T1没有意义，只用设定T2(T1>T2) 我们这里将T2设置为平均距离
- * http://blog.csdn.net/dliyuedong/article/details/40711399
- * Cluster 簇
- * 在使用了T1后 对于距离小于T2的加入簇中 小于T1的从点集中删除。即各个簇之间会有重叠的点击
+ * http://blog.csdn.net/dliyuedong/article/details/40711399 Cluster 簇 在使用了T1后
+ * 对于距离小于T2的加入簇中 小于T1的从点集中删除。即各个簇之间会有重叠的点击
  * http://www.cnblogs.com/jamesf/p/4751565.html
  * 
  * Kmeans对噪声抗干扰较弱，通过Canopy对比较小的NumPoint的Cluster直接去掉 有利于抗干扰。
  * Canopy选择出来的每个Canopy的centerPoint作为Kmeans比较科学。
- * @author YD
- * 交叉检验就是不断划分training set和test set来训练模型，最后得到t1t2的最优/局部最优值
+ * 
+ * 可以先两两之间计算距离 根据各个区间之间的点的分布数来决定t2
+ * 数据较大时t2值不好确认 可以先取出部分数据进行计算k 决定t2		(交叉验证)?
+ * 
+ * @author YD 交叉检验就是不断划分training set和test set来训练模型，最后得到t1t2的最优/局部最优值
  */
 public class Canopy
 {
@@ -37,7 +38,7 @@ public class Canopy
 	 */
 	public void cluster()
 	{
-		T2 = getAverageDistance(points);
+		T2 = getAverageDistance(points)/2;
 		while (points.size() != 0)
 		{
 			List<Point> cluster = new ArrayList<Point>();
